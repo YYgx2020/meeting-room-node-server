@@ -1,16 +1,44 @@
 // 专门用来上传图片的路由
-const Router = require('koa-router')
+const Router = require("koa-router");
+const router = new Router({ prefix: "/api/user" });
 
-const {getInfo, update, getInfoLimit} = require('../controller/user.controller')
-const router = new Router({prefix: '/api/user'})
+const {
+  login,
+  createUser,
+  getUserList,
+  updateUserInfo,
+  del,
+} = require("../controller/user.controller");
 
-// 获取用户信息
-router.get('/get', getInfo)
+const {
+  verifyLogin,
+  verifyPass,
+  verifyPhone,
+  crpytPassword,
+  verifyUserIsExist
+} = require("../middleware/user.middleware");
+const { judgeCodeIsExpired } = require("../middleware/code.middleware");
+const { auth } = require("../middleware/user.middleware");
 
-// 获取用户头像、用户名、格言
-router.get('/getLimit', getInfoLimit)
+// 用户登录，判断账号是否存在，再判断审核注册审核是否通过
+router.post("/login", verifyLogin, verifyPass, login);
 
-// 修改用户信息
-router.post('/update', update)
+router.post(
+  "/register",
+  verifyPhone,
+  judgeCodeIsExpired,
+  crpytPassword,
+  createUser
+);
 
-module.exports = router
+router.get("/get", auth, getUserList);
+
+router.get("/refresh", auth, getUserList);
+
+router.post("/pass", auth, updateUserInfo);
+
+router.post('/del', auth, del);
+
+router.post('/changePassword', verifyUserIsExist, verifyPass,judgeCodeIsExpired, crpytPassword, updateUserInfo);
+
+module.exports = router;

@@ -1,7 +1,7 @@
 module.exports = {
   accountAlreadyRegistered: {
     code: '10001',
-    message: '账号已注册',
+    message: '该手机账号已注册',
     result: '',
   },
   usernameAlreadyExited: {
@@ -9,7 +9,7 @@ module.exports = {
     message: '当前用户名已经被使用，请更换一个',
     result: '',
   },
-  getEmailError: {
+  getPhoneError: {
     code: '10003',
     message: '获取用户邮箱错误',
     result: '',
@@ -158,6 +158,19 @@ module.exports = {
     code: '10032',
     message: '获取用户成就错误',
     result: '',
+  }, serverError: {
+    code: 10015,
+    message: '服务器错误',
+    result: '',
+  }, waitToPass: {
+    code: 10033,
+    message: '您的账号正在审核中'
+  }, noPass: {
+    code: 10034,
+    message: '您的账号申请未通过' 
+  }, deleteOrganizationError: {
+    code: 10035,
+    message: '删除组织机构错误'
   }
   
 }
