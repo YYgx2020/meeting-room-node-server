@@ -9,7 +9,8 @@ const {
   getApproval,
   adminAdd,
   getLimitList,
-  getConflictAppointRecord
+  getConflictAppointRecord,
+  searchByKeyWord
 } = require("../controller/user.appoint.controller");
 
 router.post("/add", auth, add);
@@ -29,5 +30,7 @@ router.get("/refresh", auth, getLimitList);
 router.post("/cancel", auth, updateUserAppoint);
 
 router.get("/getConflictAppointRecord", auth, getConflictAppointRecord);
+
+router.get('/searchByKeyWord', auth, searchByKeyWord);
 
 module.exports = router;

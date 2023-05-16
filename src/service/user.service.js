@@ -7,6 +7,21 @@ const Organization = require("../model/organization.model");
 const { Op } = require("sequelize");
 
 class UserService {
+  // 更新用户信息（邮箱和姓名）
+  updateUserInfo_2 = async ({ id, key, value }) => {
+    const where = {
+      id,
+    };
+    const updateData = { [`${key}`]: value };
+    console.log('更新的数据：', updateData, where);
+    console.log(this);
+    await User.update(updateData, { where });
+    const res = await this.getUserInfo({id});
+    console.log('service======================', res);
+    delete res.organization;
+    return res;
+  }
+
   // 创建用户
   async create({
     organization_id,
@@ -37,7 +52,7 @@ class UserService {
   }
 
   // 获取用户信息
-  async getUserInfo({ id, email, phone, name }) {
+  getUserInfo = async ({ id, email, phone, name }) => {
     const whereOpt = {};
 
     id && Object.assign(whereOpt, { id });
@@ -53,7 +68,7 @@ class UserService {
       where: whereOpt,
     });
     // return res ? res.dataValues : null;
-    console.log('res: ', res);
+    console.log("res: ", res);
     // console.log('res: ', res.organization.dataValues);
     if (res) {
       res.dataValues.organization_name = res.organization.dataValues.name;
@@ -100,7 +115,7 @@ class UserService {
         "updatedAt",
         "openid",
         "is_system_admin",
-      ]
+      ],
     });
   }
 
@@ -135,7 +150,7 @@ class UserService {
     role,
     reason,
     password,
-    email
+    email,
   }) {
     const where = { phone };
     const updateData = {};

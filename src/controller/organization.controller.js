@@ -55,7 +55,12 @@ class OrganizationController {
       let { offset, limit, current } = ctx.query;
       offset *= 1;
       limit *= 1;
-      current *= 1;
+      console.log('current: ', current);
+      if (current === undefined) {
+        current = 3;
+      } else {
+        current *= 1;
+      }
       const result = await getAllOrganizationList({ offset, limit, current });
       console.log("数据获取结果：", result);
       ctx.body = {

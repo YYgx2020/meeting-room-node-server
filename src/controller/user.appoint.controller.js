@@ -2,9 +2,22 @@ const {
   create,
   findDateRecord,
   update,
+  searchByKeyWord
 } = require("../service/user.appoint.service");
 
 class UserAppointController {
+
+  // 根据关键词查找
+  async searchByKeyWord(ctx) {
+    const {keyWord, user_id} = ctx.query;
+    const res = await searchByKeyWord({keyWord, user_id});
+    ctx.body = {
+      code: 200,
+      message: '查询成功',
+      result: res,
+    }
+  }
+
   // 获取有冲突的预约消息
   async getConflictAppointRecord(ctx, next) {
     const { date, room_id, start_time, end_time } = ctx.query;

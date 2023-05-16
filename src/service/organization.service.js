@@ -18,10 +18,10 @@ class OrganizationService {
   // 分页获取所有记录
   async getAllOrganizationList({ offset, limit, current }) {
     console.log("数据：", { offset, limit, current });
-    const where = { is_system_organization: false };
+    const where = { is_system_organization: false, is_delete: false, };
     if (current == 0) {
       Object.assign(where, { is_pass: 0 });
-    } else {
+    } else if (current == 1) {
       // is_pass *= is_pass;
       Object.assign(where, {
         is_pass: {
@@ -31,7 +31,7 @@ class OrganizationService {
     }
     // is_pass && is_pass * 1;
     // console.log('分页和限制', {offset, limit});
-    return await Organization.findAll({
+    return await Organization.findAndCountAll({
       where,
       order: [["id", "DESC"]],
       offset,

@@ -173,7 +173,7 @@ const judgeCodeIsExpired = async (ctx, next) => {
 // 登录验证(账号和密码)
 const verifyLogin = async (ctx, next) => {
   try {
-    // console.log("header: ", ctx.request.header);
+    console.log("=================", ctx.request.body);
     const { phone, password } = ctx.request.body;
     const res = await getUserInfo({ phone });
     // console.log("用户信息获取：", res);

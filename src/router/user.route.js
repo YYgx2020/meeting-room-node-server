@@ -8,6 +8,7 @@ const {
   getUserList,
   updateUserInfo,
   del,
+  update,
 } = require("../controller/user.controller");
 
 const {
@@ -40,5 +41,7 @@ router.post("/pass", auth, updateUserInfo);
 router.post('/del', auth, del);
 
 router.post('/changePassword', verifyUserIsExist, verifyPass,judgeCodeIsExpired, crpytPassword, updateUserInfo);
+
+router.post('/updateUserInfo', auth, update);
 
 module.exports = router;

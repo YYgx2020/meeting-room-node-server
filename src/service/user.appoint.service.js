@@ -4,6 +4,28 @@ const UserAppoint = require("../model/user.appoint.model");
 const { getRoomInfo } = require("../service/room.service");
 
 class UserAppointService {
+
+  async searchByKeyWord({keyWord, user_id}) {
+    const where = {
+      user_id,
+      [Op.or]: {
+        contact: {
+          [Op.like]: `%${keyWord}%`,
+        },
+        phone: {
+          [Op.like]: `%${keyWord}%`,
+        },
+        reason: {
+          [Op.like]: `%${keyWord}%`,
+        },
+        no_pass_reason: {
+          [Op.like]: `%${keyWord}%`,
+        }
+      }
+    };
+    return UserAppoint.findAndCountAll({where})
+  }
+
   async create({
     room_id,
     user_id,

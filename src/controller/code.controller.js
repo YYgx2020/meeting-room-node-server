@@ -76,7 +76,7 @@ class CodeController {
     // 将验证码返回给前端
     ctx.body = {
       code: 200,
-      message: "验证码获取成功，请在1分钟之内完成验证操作",
+      message: "验证码获取成功，请在5分钟之内完成验证操作",
       verifyCode: code,
     };
     // setTimeout 的第一个参数是函数时，不能传参

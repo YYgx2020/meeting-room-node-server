@@ -1,4 +1,10 @@
-const { create, getOwnRoomList, update, getRoomInfo } = require("../service/room.service");
+const {
+  create,
+  getOwnRoomList,
+  update,
+  getRoomInfo,
+  getConditionalQuery
+} = require("../service/room.service");
 
 class RoomController {
   async add(ctx, next) {
@@ -92,10 +98,20 @@ class RoomController {
 
   async searchByOrgid(ctx) {
     const { keyWord, organization_id } = ctx.query;
-    const res = await getOwnRoomList({organization_id, keyWord});
+    const res = await getOwnRoomList({ organization_id, keyWord });
     ctx.body = {
       code: 200,
-      message: '获取成功',
+      message: "获取成功",
+      result: res,
+    };
+  }
+
+  async getConditionalQuery(ctx) {
+    const { date, code, start_time, end_time, number, organization_id } = ctx.query;
+    const res = await getConditionalQuery({ date, code, start_time, end_time, number, organization_id });
+    ctx.body = {
+      code: 200,
+      message: '查找成功',
       result: res,
     }
   }

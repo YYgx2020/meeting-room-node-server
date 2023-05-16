@@ -22,10 +22,23 @@ const {
   getAllUserList,
   delUser,
   updateUserInfo,
+  updateUserInfo_2,
 } = require("../service/user.service");
 const { sendEmail } = require("../utils/email");
 
 class UserController {
+
+  // 更新用户信息
+  async update(ctx) {
+    const {id, key, value} = ctx.request.body;
+    const res = await updateUserInfo_2({id, key, value});
+    console.log('controller======================', res);
+    ctx.body = {
+      code: 200,
+      message: '更新成功',
+      result: res,
+    }
+  }
   // 创建用户
   async createUser(ctx, next) {
     try {
