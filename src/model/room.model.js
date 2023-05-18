@@ -39,7 +39,7 @@ const Room = seq.define('room', {
     type: DataTypes.STRING(200),
     comment: '会议室描述',
   },
-  is_deleted: {
+  is_delete: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
     comment: '逻辑删除',

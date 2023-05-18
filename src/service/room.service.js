@@ -30,7 +30,7 @@ class RoomService {
 
   async getOwnRoomList({ organization_id, offset, limit, keyWord }) {
     try {
-      const where = { organization_id, is_deleted: false };
+      const where = { organization_id, is_delete: false };
       if (keyWord !== undefined) {
         Object.assign(where, {
           [Op.or]: [
@@ -74,6 +74,7 @@ class RoomService {
     number,
     desc,
     organization_id,
+    is_delete,
   }) {
     const where = { id, organization_id };
     const updateData = {
@@ -85,6 +86,7 @@ class RoomService {
       phone,
       number,
       desc,
+      is_delete
     };
     return await Room.update(updateData, { where });
   }

@@ -73,6 +73,7 @@ class RoomController {
         number,
         desc,
         organization_id,
+        is_delete,
       } = ctx.request.body;
       const res = await update({
         id,
@@ -85,6 +86,7 @@ class RoomController {
         number,
         desc,
         organization_id,
+        is_delete
       });
       ctx.body = {
         code: 200,

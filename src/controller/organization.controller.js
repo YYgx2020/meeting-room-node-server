@@ -8,6 +8,8 @@ const {
   updateOrganizationInfo,
   getAll,
   delOrganization,
+  getDeleteList,
+  getList,
 } = require("../service/organization.service");
 
 const {
@@ -18,6 +20,69 @@ const {
 const { sendEmail } = require("../utils/email");
 
 class OrganizationController {
+  async getList(ctx) {
+    const { offset, limit, is_pass, is_delete } = ctx.query;
+    const res = await getList({ offset, limit, is_pass, is_delete });
+    ctx.body = {
+      code: 200,
+      message: "获取成功",
+      result: res,
+    };
+  }
+
+  async getDeleteList(ctx) {
+    const { offset, limit } = ctx.query;
+    const res = await getDeleteList({ offset, limit });
+    ctx.body = {
+      code: 200,
+      message: "获取成功",
+      result: res,
+    };
+  }
+
+  async delOrg(ctx) {
+    const { id, is_delete, phone, admin, admin_phone, reason } =
+      ctx.request.body;
+    const res = updateOrganizationInfo({ id, is_delete, ban_reason: reason });
+    // 发送邮件告知机构管理员
+    try {
+      const userInfo = await getUserInfo({ phone });
+      console.log("userInfo: ", userInfo);
+      const to = userInfo.email;
+      const subject = "机构违规通知";
+      const html = `
+        <p>您好！</p>
+        <p>您的组织机构由于违规操作，已被系统封禁，您机构下的所有成员将无法继续登录使用机构下的会议室资源</p>
+        <p>您可以向平台管理员进行申诉，并申请恢复机构的入驻</p>
+        <p>审核人员：${admin}</p>
+        <p>联系方式：${admin_phone}</p>
+      `;
+      sendEmail(to, subject, html);
+      ctx.body = {
+        code: 200,
+        message: "更新成功",
+        result: "",
+      };
+    } catch (error) {
+      ctx.app.emit("error", sendEmailError, ctx);
+    }
+    ctx.body = {
+      code: 200,
+      message: "更新成功",
+      result: res,
+    };
+  }
+
+  async sysSearch(ctx) {
+    const { keyWord } = ctx.query;
+    const res = await sysFindAll({ keyWord });
+    ctx.body = {
+      code: 200,
+      message: "获取成功",
+      result: res,
+    };
+  }
+
   // 创建组织机构
   async createOrganization(ctx, next) {
     const data = ctx.request.body;
@@ -55,7 +120,7 @@ class OrganizationController {
       let { offset, limit, current } = ctx.query;
       offset *= 1;
       limit *= 1;
-      console.log('current: ', current);
+      console.log("current: ", current);
       if (current === undefined) {
         current = 3;
       } else {
@@ -87,19 +152,28 @@ class OrganizationController {
         admin_phone,
       } = ctx.request.body;
       await updateOrganizationInfo({ id, is_pass, no_pass_reason, is_delete });
-      if (is_pass == -1) {
-        await delUser({ phone });
-      } else if (is_pass == 1) {
-        const data = {
-          phone,
-          is_organization_admin: true,
-          is_admin: true,
-          register_status: 1,
-          admin_apply_status: 2,
-          role: 4,
-        };
-        await updateUserInfo(data);
-      }
+      // if (is_pass == -1) {
+      //   await delUser({ phone });
+      // } else if (is_pass == 1) {
+      //   const data = {
+      //     phone,
+      //     is_organization_admin: true,
+      //     is_admin: true,
+      //     register_status: 1,
+      //     admin_apply_status: 2,
+      //     role: 4,
+      //   };
+      //   await updateUserInfo(data);
+      // }
+      const data = {
+        phone,
+        is_organization_admin: true,
+        is_admin: true,
+        register_status: 1,
+        admin_apply_status: 2,
+        role: 4,
+      };
+      await updateUserInfo(data);
       try {
         const userInfo = await getUserInfo({ phone });
         console.log("userInfo: ", userInfo);
@@ -140,9 +214,15 @@ class OrganizationController {
   // 删除机构
   async del(ctx, next) {
     try {
-      const { id, phone, reason, admin, admin_phone, is_pass, is_delete } = ctx.request.body;
-      const updateRes = await updateOrganizationInfo({ id, is_pass, no_pass_reason: reason, is_delete });
-      console.log('updateRes: ', updateRes);
+      const { id, phone, reason, admin, admin_phone, is_pass, is_delete } =
+        ctx.request.body;
+      const updateRes = await updateOrganizationInfo({
+        id,
+        is_pass,
+        no_pass_reason: reason,
+        is_delete,
+      });
+      console.log("updateRes: ", updateRes);
       const userInfo = await getUserInfo({ phone });
       await delUser({ phone });
       // console.log("userInfo: ", userInfo);
@@ -152,10 +232,10 @@ class OrganizationController {
           <p>您好！</p>
           <p>您的机构入驻申请不通过</p>
           <p>具体原因：</p>
-          <p>${ reason }</p>
+          <p>${reason}</p>
           <p>如对以上结果有异议，可联系平台管理员</p>
-          <p>管理员：${ admin }</p>
-          <p>管理员：${ admin_phone }</p>
+          <p>管理员：${admin}</p>
+          <p>管理员：${admin_phone}</p>
         `;
       sendEmail(to, subject, html);
       ctx.body = {

@@ -56,7 +56,11 @@ const Organization = seq.define("organization", {
   user_openid: {
     type: DataTypes.STRING,
     comment: '申请人的openid，用于发送订阅消息通知用户审核结果',
-  }
+  },
+  ban_reason: {
+    type: DataTypes.TEXT,
+    comment: '平台被封禁的原因',
+  },
 });
 
 // 一个组织机构可以与多个用户对应，也就是说一个组织机构中可以包含多个用户
